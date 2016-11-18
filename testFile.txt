@@ -1,0 +1,6 @@
+This is a file
+
+to test if
+
+we know how to use git
+
