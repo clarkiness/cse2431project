@@ -3,7 +3,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
  
-void client_send(char *message)
+void client_send(char message[128])
 {
     int socket_desc;
     struct sockaddr_in server;
@@ -25,7 +25,7 @@ void client_send(char *message)
     }
      
     //Send some data
-    if( send(socket_desc , message , strlen(message) , 0) < 0)
+    if( send(socket_desc , message , 128 , 0) < 0)
     {
         return 1;
     }     
