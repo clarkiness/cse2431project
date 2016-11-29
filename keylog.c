@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <linux/input.h>
+#include "keylog.h"
 
 #define EVENT_NUM 100
 #define TOT_KEYS 70

