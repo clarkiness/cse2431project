@@ -24,7 +24,6 @@ void client_send(char message[128])
     {
         return;
     }
-     
     //Send some data
     if( send(socket_desc , message , 128 , 0) < 0)
     {

