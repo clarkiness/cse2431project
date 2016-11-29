@@ -11,7 +11,7 @@ void client_send(char message[128])
     //Create socket
     if ((socket_desc = socket(AF_INET , SOCK_STREAM , 0)) == -1)
     {
-		return 1;
+	return 1;
     }
          
     server.sin_addr.s_addr = inet_addr("127.0.0.1");

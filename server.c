@@ -11,7 +11,6 @@ int main()
     char message[128];
 	char *filename;
 	FILE *fp;
-     
 	 
 	//Open File
 	filename = "log.txt";
