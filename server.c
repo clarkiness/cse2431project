@@ -4,14 +4,26 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <signal.h>
  
+int socket_desc, new_socket, c;
+FILE *fp;
+
+void safebreak()
+{
+  close(new_socket);
+  close(socket_desc);
+  printf("End connection\n");
+  exit(0);
+}
+
 int main()
 {
-  int socket_desc , new_socket , c, ret, read_size, csock, ssock;
+  //int socket_desc , new_socket , c;
   struct sockaddr_in server, client;
   char message[128];
   char *filename;
-  FILE *fp;
+  //FILE *fp;
 	 
   //Open File
   filename = "log.txt";
@@ -44,6 +56,7 @@ int main()
     puts("Waiting for incoming connections...");
     c = sizeof(struct sockaddr_in);
 
+    signal(SIGINT, safebreak);
     //infinite runtime for the server (or util user runs CTRL_C
     while(1)
     {
