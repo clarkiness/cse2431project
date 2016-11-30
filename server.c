@@ -3,18 +3,19 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <stdlib.h>
  
 int main()
 {
-    int socket_desc , new_socket , c;
-    struct sockaddr_in server , client;
-    char message[128];
-	char *filename;
-	FILE *fp;
+  int socket_desc , new_socket , c, ret, read_size, csock, ssock;
+  struct sockaddr_in server, client;
+  char message[128];
+  char *filename;
+  FILE *fp;
 	 
-	//Open File
-	filename = "log.txt";
-	fp = fopen(filename, "a+");
+  //Open File
+  filename = "log.txt";
+  fclose(fopen(filename, "w+"));
 	
     //Create socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
@@ -42,25 +43,44 @@ int main()
     //Accept and incoming connection
     puts("Waiting for incoming connections...");
     c = sizeof(struct sockaddr_in);
-    while( (new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
+
+    //infinite runtime for the server (or util user runs CTRL_C
+    while(1)
     {
-        puts("Connection accepted");
-		if( recv(socket_desc, message , 128 , 0) < 0)
-		{
-			puts("recv failed");
-		} 
-		else 
-		{
-			fputs(message, fp);
-		}
+      new_socket = accept(socket_desc, (struct sockaddr *)&client, (socklen_t *)&c);
+      if (new_socket < 0)
+      {
+        puts("Unable to make connection\n");
+        exit(0);
+      }
+
+      //TODO: Might need to mess with memset to clear space for message
+
+
+      puts("Connection accepted");
+      /*if( recv(socket_desc, message , 128 , 0) < 0)*/
+      if (read(new_socket, message, sizeof(message)) <= 0)
+      {
+        puts("recv failed");
+      } 
+      else 
+      {
+        //open up file for append
+        fp = fopen(filename, "a+");
+        puts("something");
+        //print to and close logfile when done to ensure it can be read
+	fprintf(fp, "%s\n", message);
+        fclose(fp);
+      }
     }
-	fclose(fp);
+    puts("done with socket");
      
-    if (new_socket<0)
-    {
-        perror("accept failed");
-        return 1;
-    }
-     
+    close(new_socket);
+    close(socket_desc);
+    fclose(fp);
+    printf("End connection\n");
     return 0;
+ 
+    //TODO: Add signal to safe exit program
 }
+

