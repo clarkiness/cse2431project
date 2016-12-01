@@ -122,30 +122,29 @@ while(1)
 				strcpy(message, "");
 				strcat(message, keys[inpEvent.code]);
 			}
-                        printf("%s\n", keys[inpEvent.code]);
 		}
                 else if (inpEvent.code == 108 || inpEvent.code == 105 || inpEvent.code == 103 || inpEvent.code == 106 || inpEvent.code == 100)
                 {
                   char *str;
                   if (inpEvent.code == 108)
                   {
-                    str = "KEY_DOWN";  
+                    str = "[KEY_DOWN]";  
                   }
                   else if (inpEvent.code == 105)
                   {
-                    str = "KEY_LEFT";
+                    str = "[KEY_LEFT]";
                   }
                   else if (inpEvent.code == 103)
                   {
-                    str = "KEY_UP";
+                    str = "[KEY_UP]";
                   }
                   else if (inpEvent.code == 106)
                   {
-                    str = "KEY_RIGHT";
+                    str = "[KEY_RIGHT]";
                   }
                   else
                   {
-                    str = "KEY_RIGHTALT";
+                    str = "[KEY_RIGHTALT]";
                   }
 
                  if (strlen(message) + strlen(str + 1) < SIZEOF_MESSAGE)
@@ -159,7 +158,6 @@ while(1)
                           strcpy(message, "");
                           strcat(message, str);
                         }
-                        printf("%s\n", str); 
                 }
 	}
   }
