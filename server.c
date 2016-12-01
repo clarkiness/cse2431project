@@ -21,7 +21,7 @@ int main()
 {
   //int socket_desc , new_socket , c;
   struct sockaddr_in server, client;
-  char message[128];
+  char message[64];
   char *filename;
   //FILE *fp;
 	 
@@ -88,12 +88,11 @@ int main()
     }
     puts("done with socket");
      
+    //should not reach this
     close(new_socket);
     close(socket_desc);
     fclose(fp);
     printf("End connection\n");
     return 0;
- 
-    //TODO: Add signal to safe exit program
 }
 

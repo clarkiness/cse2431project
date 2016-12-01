@@ -1,3 +1,3 @@
 /*** keylog.h ***/
 
-void client_send(char message[128]);
+void client_send(char message[64]);
