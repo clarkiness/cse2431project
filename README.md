@@ -18,3 +18,8 @@ Next we go to the second terminal and run
 you can now go to the third terminal and run cat “log.txt”
 to see the output of the server and view all of the
 keys that have recorded thus far.
+
+It is possible to run the keylogger in the background. To
+do so, simply type "sudo ./ubuntudaemon_r &" in the command terminal.
+Note that this will only work if you run an additional sudo command
+(like "sudo ls") and enter the user password prior to running the keylogger.
